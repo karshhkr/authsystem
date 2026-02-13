@@ -1,11 +1,9 @@
 package com.example.authsystem.dto;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 
-@Data
-@AllArgsConstructor
-public class AuthResponse  {
+public record AuthResponse(
+        String accessToken,
+        String refreshToken,
+        UserResponse user
+) {
 
-    private String token;
-    private UserResponse user;
 }
