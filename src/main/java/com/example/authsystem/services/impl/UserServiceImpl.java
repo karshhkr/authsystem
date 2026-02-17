@@ -58,14 +58,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse registerUser(RegisterRequest request) {
-        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+        if (userRepository.findByEmail(request.email()).isPresent()) {
             throw new ApiException("Email already exists");
         }
 
         User user = User.builder()
-                .name(request.getName())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
+                .name(request.name())
+                .email(request.email())
+                .password(passwordEncoder.encode(request.password()))
                 .role("USER")
                 .deleted(false)
                 .build();
@@ -77,10 +77,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public AuthResponse login(LoginRequest request) {
 
-        User user = userRepository.findByEmailAndDeletedFalse(request.getEmail())
+        User user = userRepository.findByEmailAndDeletedFalse(request.email())
                 .orElseThrow(() -> new ApiException("User not found"));
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(request.password(), user.getPassword())) {
             throw new ApiException("Invalid password");
         }
 

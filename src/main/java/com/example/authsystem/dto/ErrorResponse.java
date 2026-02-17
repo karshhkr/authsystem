@@ -1,4 +1,8 @@
 package com.example.authsystem.dto;
-
-public record ErrorResponse() {
+import java.time.Instant;
+public record ErrorResponse(   Instant timestamp,
+                               int status,
+                               String error,
+                               String message,
+                               String path) {
 }

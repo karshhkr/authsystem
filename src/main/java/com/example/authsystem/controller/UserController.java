@@ -4,6 +4,7 @@ import com.example.authsystem.dto.ChangePasswordRequest;
 import com.example.authsystem.dto.UpdateProfileRequest;
 import com.example.authsystem.dto.UserResponse;
 import com.example.authsystem.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +40,7 @@ public class UserController {
     @PutMapping("/change-password")
     public String changePassword(
             Authentication authentication,
-            @RequestBody ChangePasswordRequest request
+            @Valid @RequestBody ChangePasswordRequest request
     ) {
 
         userService.changePassword(authentication.getName(), request);

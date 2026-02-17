@@ -3,6 +3,7 @@ package com.example.authsystem.controller;
 import com.example.authsystem.dto.*;
 import com.example.authsystem.service.RefreshTokenService;
 import com.example.authsystem.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,12 +16,12 @@ public class AuthController {
     private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/register")
-    public UserResponse register(@RequestBody RegisterRequest request) {
+    public UserResponse register(@Valid @RequestBody RegisterRequest request) {
         return userService.registerUser(request);
     }
 
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody LoginRequest request) {
+    public AuthResponse login(@Valid @RequestBody LoginRequest request) {
         return userService.login(request);
     }
 
