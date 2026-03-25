@@ -13,6 +13,7 @@ import org.springframework.data.domain.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.authsystem.entity.Role;
 import java.time.Instant;
 import java.util.List;
 
@@ -66,35 +67,36 @@ public class UserServiceImpl implements UserService {
                 .name(request.name())
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
-                .role("USER")
+                .role(Role.USER)
                 .deleted(false)
                 .build();
 
         User saved = userRepository.save(user);
         return mapToResponse(saved);
     }
-
     @Override
     public AuthResponse login(LoginRequest request) {
-
         User user = userRepository.findByEmailAndDeletedFalse(request.email())
-                .orElseThrow(() -> new ApiException("User not found"));
+                .orElseThrow(() -> new ApiException("User not found or account deactivated"));
 
         if (!passwordEncoder.matches(request.password(), user.getPassword())) {
-            throw new ApiException("Invalid password");
+            throw new ApiException("Invalid email or password");
         }
 
+        // Professional Way: Generate Access Token
         String accessToken = jwtService.generateToken(user.getEmail());
 
-        // ✅ refresh token create
+        // Generate Refresh Token (Ensuring rotation if needed)
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getEmail());
 
-        UserResponse userResponse = mapToResponse(user);
-
-        return new AuthResponse(accessToken, refreshToken.getToken(), userResponse);
+        return AuthResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken.getToken())
+                .user(mapToResponse(user))
+                .build();
     }
 
-    // ===================== ✅ ADMIN METHODS =====================
+    //  ADMIN METHODS
 
     @Override
     public UserPageResponse adminGetUsers(int page, int size, String search, String role, Boolean deleted) {
@@ -156,7 +158,7 @@ public class UserServiceImpl implements UserService {
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
-                user.getRole()
+                user.getRole().name()
         );
     }
 }

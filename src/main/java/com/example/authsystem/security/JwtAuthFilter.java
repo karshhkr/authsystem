@@ -1,5 +1,6 @@
 package com.example.authsystem.security;
 
+import com.example.authsystem.entity.Role;
 import com.example.authsystem.entity.User;
 import com.example.authsystem.repository.UserRepository;
 import jakarta.servlet.FilterChain;
@@ -42,20 +43,21 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                User user = userRepository.findByEmail(userEmail).orElse(null);
+                User user = userRepository.findByEmailAndDeletedFalse(userEmail).orElse(null);
                 if (user == null) {
                     filterChain.doFilter(request, response);
                     return;
                 }
 
-                String dbRole = user.getRole(); // USER/ADMIN -> ROLE_USER/ROLE_ADMIN
-                String role = dbRole.startsWith("ROLE_") ? dbRole : "ROLE_" + dbRole;
+                // a Role is enum now
+                Role roleEnum = user.getRole();            // USER / ADMIN
+                String authority = "ROLE_" + roleEnum.name(); // ROLE_USER / ROLE_ADMIN
 
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
                                 userEmail,
                                 null,
-                                List.of(new SimpleGrantedAuthority(role))
+                                List.of(new SimpleGrantedAuthority(authority))
                         );
 
                 SecurityContextHolder.getContext().setAuthentication(authToken);

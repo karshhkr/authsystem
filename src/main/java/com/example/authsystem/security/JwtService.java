@@ -3,45 +3,47 @@ package com.example.authsystem.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.UUID;
+
 @Service
 public class JwtService {
 
-    // ✅ minimum 32 chars
-    private static final String SECRET_KEY = "THIS_IS_A_DEMO_SECRET_KEY_32_CHARS!!";
+    @Value("${app.jwt.secret}")
+    private String secretKeyStr;
+
+    @Value("${app.jwt.access-exp-min}")
+    private long expirationMinutes;
 
     private SecretKey getKey() {
-        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+        return Keys.hmacShaKeyFor(secretKeyStr.getBytes(StandardCharsets.UTF_8));
     }
 
-    // 1) Generate token
     public String generateToken(String email) {
         Date now = new Date();
-        Date exp = new Date(System.currentTimeMillis() + 1000 * 60 * 60); // 1 hour
+        Date exp = new Date(System.currentTimeMillis() + 1000 * 60 * expirationMinutes);
 
         return Jwts.builder()
                 .subject(email)
                 .issuedAt(now)
                 .expiration(exp)
-                .id(UUID.randomUUID().toString().toString())
+                .id(UUID.randomUUID().toString())
                 .signWith(getKey())
                 .compact();
     }
 
-    // 2) Extract email
     public String extractEmail(String token) {
         return extractAllClaims(token).getSubject();
     }
 
-    // 3) Token valid?
     public boolean isTokenValid(String token, String userEmail) {
-        String extractedEmail = extractEmail(token);
-        return extractedEmail.equals(userEmail) && !isTokenExpired(token);
+        final String email = extractEmail(token);
+        return (email.equals(userEmail) && !isTokenExpired(token));
     }
 
     private boolean isTokenExpired(String token) {

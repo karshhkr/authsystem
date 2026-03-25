@@ -32,20 +32,20 @@ public class AdminController {
         return userService.adminGetUsers(page, size, search, role, deleted);
     }
 
-    // ✅ 2) Get user by id
+    //  Get user by id
     @GetMapping("/users/{id}")
     public UserResponse getUserById(@PathVariable Long id) {
         return userService.adminGetUserById(id);
     }
 
-    // ✅ 3) Soft delete user
+    //  Soft delete user
     @DeleteMapping("/users/{id}")
     public String softDelete(@PathVariable Long id) {
         userService.adminSoftDeleteUser(id);
         return "User soft deleted";
     }
 
-    // ✅ 4) Restore user
+    //  Restore user
     @PutMapping("/users/{id}/restore")
     public String restore(@PathVariable Long id) {
         userService.adminRestoreUser(id);

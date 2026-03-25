@@ -3,7 +3,6 @@ package com.example.authsystem.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import javax.management.relation.Role;
 import java.time.Instant;
 
 @Entity
@@ -12,7 +11,7 @@ import java.time.Instant;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder   // 🔥 THIS IS REQUIRED
+@Builder
 public class User {
 
     @Id
@@ -28,14 +27,15 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    // enum role stored as string
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String role;
+    private Role role;
 
-    // ✅ Soft delete
-    @Builder.Default
+    //  soft delete
+    @Column(nullable = false)
     private boolean deleted = false;
 
+    @Column(name = "deleted_at")
     private Instant deletedAt;
-
-
 }

@@ -13,10 +13,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(String email);
 
-    // ✅ non-deleted
+    //  non-deleted
     Optional<User> findByEmailAndDeletedFalse(String email);
 
-    Optional<User> findByIdAndDeletedFalse(Long id);
+
 
     @Query("""
         SELECT u FROM User u
