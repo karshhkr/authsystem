@@ -85,6 +85,9 @@ src/main/java/com/example/authsystem │
 
 ## Swagger URL: http://localhost:8081/swagger-ui.html
 
+
+## 🔗 Live Swagger URL Link: https://authsystem-production-production.up.railway.app/swagger-ui/index.html
+
 ---
 
 ## 📌 Author
