@@ -2,6 +2,8 @@
 
 A production-style authentication and authorization backend built using Spring Boot.
 
+## 🔗 Live Swagger URL Link: https://authsystem-ar4f.onrender.com/swagger-ui/index.html
+
 ---
 
 ## 🚀 Features
@@ -86,7 +88,7 @@ src/main/java/com/example/authsystem │
 ## Swagger URL: http://localhost:8081/swagger-ui.html
 
 
-## 🔗 Live Swagger URL Link: https://authsystem-ar4f.onrender.com/swagger-ui/index.html
+
 
 ---
 
